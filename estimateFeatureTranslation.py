@@ -46,8 +46,8 @@ def interp2(v, xq, yq):
 
     interp_val = v1 * w1 + w2 * v2 + w3 * v3 + w4 * v4
 
-    if dim_input == 2:
-        return interp_val.reshape(q_h, q_w)
+    # if dim_input == 2:
+    #     return interp_val.reshape(q_h, q_w)
     return interp_val
 
 def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
@@ -71,7 +71,7 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     Iyp = Iy[nC1[0],nC1[1]].reshape(-1,1)
     A = np.hstack([Ixp,Iyp])
     while ((u+v)>1 and i<15):
-        It = -interp2(img2G,nC2[0],nC2[1])+img1G[nC1[0],nC1[1]]
+        It = interp2(img1G-img2G,nC2[0],nC2[1])
         u,v = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(It)
         nC2[0] = nC2[0]+v
         nC2[1] = nC2[1]+u
