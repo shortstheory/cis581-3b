@@ -1,0 +1,8 @@
+plt.imshow(cv2.cvtColor(firstFrame, cv2.COLOR_BGR2RGB))
+fig = plt.gcf()
+ax1 = fig.add_subplot(111)
+ax1.scatter(boxesData[0]['_x'],boxesData[0]['_y'],c='r',s=1,label='ANMS')
+ax1.scatter(boxesData[1]['_x'],boxesData[1]['_y'],c='r',s=1,label='ANMS')
+ax1.scatter(boxesData[2]['_x'],boxesData[2]['_y'],c='r',s=1,label='ANMS')
+plt.show()
+

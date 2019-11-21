@@ -59,22 +59,20 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     nX = np.arange(startX-5,startX+6)
     nY = np.arange(startY-5,startY+6)
     nCx,nCy = np.meshgrid(nX,nY)
-    nCX = nCx.flatten()
-    nCY = nCy.flatten()
-    nC1 = np.vstack((nCY,nCX)).astype('int')
+    nCX = nCx.flatten().astype('int')
+    nCY = nCy.flatten().astype('int')
     nCX2 = nCX.copy()
     nCY2 = nCY.copy()
-    nC2 = np.vstack((nCY2,nCX2)).astype('int')
     # gray image deltas
-    It = -img2G[nC1[0],nC1[1]]+img1G[nC2[0],nC2[1]]
-    Ixp = Ix[nC1[0],nC1[1]].reshape(-1,1)
-    Iyp = Iy[nC1[0],nC1[1]].reshape(-1,1)
+    It = -img2G[nCY,nCX]+img1G[nCY,nCX]
+    Ixp = Ix[nCY,nCX].reshape(-1,1)
+    Iyp = Iy[nCY,nCX].reshape(-1,1)
     A = np.hstack([Ixp,Iyp])
     while ((u+v)>1 and i<15):
-        It = interp2(img1G-img2G,nC2[0],nC2[1])
+        It = interp2(img1G-img2G,nCY2,nCX2) # WTF is it like this? Arg is x then y?
         u,v = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(It)
-        nC2[0] = nC2[0]+v
-        nC2[1] = nC2[1]+u
+        nCY2 = nCY2+v
+        nCX2 = nCX2+u
         x2 = x2+u
         y2 = y2+v
         i=i+1
