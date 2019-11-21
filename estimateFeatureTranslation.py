@@ -26,4 +26,7 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
         x2 = x2+u
         y2 = y2+v
         i=i+1
+    if (x2<0 or x2>img1.shape[1] or y2<0 or y2>img1.shape[1]):
+        x2 = 0
+        y2 = 0
     return x2,y2
