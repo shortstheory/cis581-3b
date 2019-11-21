@@ -14,12 +14,8 @@
 import cv2
 import numpy as np
 
-def corner_detector(img):
-    cimg = cv2.cornerHarris(img,2,3,0.04)
-    cimg[cimg<0.01*cimg.max()]=0
-    res=np.zeros((cimg.shape))
-    boxes = getBoundingBoxes()
+def corner_detector(cimg):
     # [xmin,ymin,xmax,ymax]
-    for box in boxes:
-        res[boxes[1]:boxes[3],boxes[0]:boxes[2]] = cimg[boxes[1]:boxes[3],boxes[0]:boxes[2]]
-    return res
+    cimg = cv2.cornerHarris(cimg,2,3,0.04)
+    cimg[cimg<0.01*cimg.max()]=0
+    return cimg
