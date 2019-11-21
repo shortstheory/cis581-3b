@@ -1,7 +1,7 @@
 <annotation>
 	<folder>cis581-3b</folder>
 	<filename>first.png</filename>
-	<path>/home/nic/ms-work/cis581-3b/first.png</path>
+	<path>/home/saumya/sem1/CIS 581/Project3B/cis581-3b/first.png</path>
 	<source>
 		<database>Unknown</database>
 	</source>
@@ -17,34 +17,10 @@
 		<truncated>0</truncated>
 		<difficult>0</difficult>
 		<bndbox>
-			<xmin>293</xmin>
-			<ymin>187</ymin>
-			<xmax>402</xmax>
-			<ymax>266</ymax>
-		</bndbox>
-	</object>
-	<object>
-		<name>t</name>
-		<pose>Unspecified</pose>
-		<truncated>0</truncated>
-		<difficult>0</difficult>
-		<bndbox>
-			<xmin>262</xmin>
-			<ymin>81</ymin>
-			<xmax>311</xmax>
-			<ymax>125</ymax>
-		</bndbox>
-	</object>
-	<object>
-		<name>t</name>
-		<pose>Unspecified</pose>
-		<truncated>0</truncated>
-		<difficult>0</difficult>
-		<bndbox>
-			<xmin>144</xmin>
-			<ymin>168</ymin>
-			<xmax>190</xmax>
-			<ymax>238</ymax>
+			<xmin>284</xmin>
+			<ymin>184</ymin>
+			<xmax>404</xmax>
+			<ymax>271</ymax>
 		</bndbox>
 	</object>
 </annotation>

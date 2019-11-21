@@ -56,27 +56,33 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     img2G = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     x2,y2 = startX,startY
     u,v=10,10
+    print(img1.shape)
     nX = np.arange(startX-5,startX+6)
     nY = np.arange(startY-5,startY+6)
     nCx,nCy = np.meshgrid(nX,nY)
-    nCX = nCx.flatten().astype('int')
-    nCY = nCy.flatten().astype('int')
-    nCX2 = nCX.copy()
-    nCY2 = nCY.copy()
-    # gray image deltas
-    It = -img2G[nCY,nCX]+img1G[nCY,nCX]
-    Ixp = Ix[nCY,nCX].reshape(-1,1)
-    Iyp = Iy[nCY,nCX].reshape(-1,1)
+    nCX1 = nCx.flatten().astype('int')
+    nCY1 = nCy.flatten().astype('int')
+    nCX2 = nCX1.copy()
+    nCY2 = nCY1.copy()
+    Ixp = Ix[nCY1,nCX1].reshape(-1,1)
+    Iyp = Iy[nCY1,nCX1].reshape(-1,1)
     A = np.hstack([Ixp,Iyp])
-    while ((u+v)>1 and i<15):
-        It = interp2(img1G-img2G,nCY2,nCX2) # WTF is it like this? Arg is x then y?
+    while (abs(u+v)>0.1 and i<15):
+        # print('i values',i)
+        It = -interp2(img2G,nCX2,nCY2)+interp2(img1G,nCX1,nCY1)
+        # print((interp2(img1G,nCX1,nCY1)-img2G[nCY2,nCX2]).sum())
         u,v = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(It)
         nCY2 = nCY2+v
         nCX2 = nCX2+u
         x2 = x2+u
         y2 = y2+v
         i=i+1
-    if (x2<0 or x2>img1.shape[1] or y2<0 or y2>img1.shape[1]):
-        x2 = 0
-        y2 = 0
+        print('u',u)
+        print('v',v)
+        # print('u',u)
+        # print('v',v)
+        #if (x1<0 or x1>img1.shape[1] or y1<0 or y1>img1.shape[1]):
+         #   x1 = 0
+          #  y1 = 0
+           # break
     return x2,y2
