@@ -25,6 +25,7 @@ for box in boxes:
     }
     boxesData.append(boxData)
 print(boxesData)
+
 currentFrame = firstFrame
 while(cap.isOpened()):
     ret,nextFrame = cap.read()

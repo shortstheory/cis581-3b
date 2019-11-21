@@ -1,19 +1,22 @@
 import numpy as np
+import cv2
+
 def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     i=0
-    img1G = Y = 0.2125*img1[:,:,0] + 0.7154*img1[:,:,1]  + 0.0721*img1[:,:,0]
-    img2G = Y = 0.2125*img2[:,:,0] + 0.7154*img2[:,:,1]  + 0.0721*img2[:,:,0]
+    img1G = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+    img2G = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     x2,y2 = startX,startY
     u,v=10,10
-    nX = list(range(startX-5,startX+6))
-    nY = list(range(startY-5,startY+6))
+    nX = np.arange(startX-5,startX+6)
+    nY = np.arange(startY-5,startY+6)
     nCx,nCy = np.meshgrid(nX,nY)
     nCX = nCx.flatten()
     nCY = nCy.flatten()
-    nC1 = np.vstack(nCY,nCX)
+    nC1 = np.vstack((nCY,nCX))
     nCX2 = nCX.copy()
     nCY2 = nCY.copy()
-    nC2 = np.vstack(nCY2,nCX2)
+    nC2 = np.vstack((nCY2,nCX2))
+    # gray image deltas
     It = -img2G[nC1[0],nC1[1]]+img1G[nC2[0]-nC2[1]]
     Ixp = Ix[nC1[0],nC1[1]].reshape(-1,1)
     Iyp = Iy[nC1[0],nC1[1]].reshape(-1,1)
