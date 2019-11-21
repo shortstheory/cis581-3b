@@ -12,12 +12,12 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     nCx,nCy = np.meshgrid(nX,nY)
     nCX = nCx.flatten()
     nCY = nCy.flatten()
-    nC1 = np.vstack((nCY,nCX))
+    nC1 = np.vstack((nCY,nCX)).astype('int')
     nCX2 = nCX.copy()
     nCY2 = nCY.copy()
-    nC2 = np.vstack((nCY2,nCX2))
+    nC2 = np.vstack((nCY2,nCX2)).astype('int')
     # gray image deltas
-    It = -img2G[nC1[0],nC1[1]]+img1G[nC2[0]-nC2[1]]
+    It = -img2G[nC1[0],nC1[1]]+img1G[nC2[0],nC2[1]]
     Ixp = Ix[nC1[0],nC1[1]].reshape(-1,1)
     Iyp = Iy[nC1[0],nC1[1]].reshape(-1,1)
     A = np.hstack([Ixp,Iyp])
