@@ -1,5 +1,6 @@
 from scipy import signal
 import numpy as np
+import pdb
 import cv2
 
 def GaussianPDF_1D(mu, sigma, length):
@@ -28,3 +29,25 @@ def findDerivatives(I_gray):
     Imag = np.sqrt(Ix*Ix + Iy*Iy)
     Iori = np.arctan(Iy/Ix)
     return Imag, Ix, Iy,Iori
+
+def est_homography(x, y, X, Y):
+    N = x.size
+    A = np.zeros([2 * N, 9])
+
+    i = 0
+    while i < N:
+        a = np.array([x[i], y[i], 1]).reshape(-1, 3)
+        c = np.array([[X[i]], [Y[i]]])
+        d = - c * a
+
+        A[2 * i, 0 : 3], A[2 * i + 1, 3 : 6]= a, a
+        A[2 * i : 2 * i + 2, 6 : ] = d
+
+        i += 1
+
+    # compute the solution of A
+    U, s, V = np.linalg.svd(A, full_matrices=True)
+    h = V[8, :]
+    H = h.reshape(3, 3)
+    H = H/H[-1,-1]
+    return H
