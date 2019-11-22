@@ -12,9 +12,9 @@ from applyBoxTransform import applyBoxTransform
 
 cap = cv2.VideoCapture('vids/Easy.mp4')
 ret,firstFrame = cap.read()
-boxes = getBoundingBoxes()
+boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
-
+print(boxes)
 boxesData = []
 
 for box in boxes:
@@ -27,10 +27,10 @@ for box in boxes:
         'startX': x.copy(),
         'startY': y.copy(),
         'startCoords': box,
-        'active': True
+        'valid': np.ones(x.shape[0],dtype='bool')
     }
     boxesData.append(boxData)
-print(boxesData)
+# print(boxesData)
 currentFrame = firstFrame
 idx = 0
 
@@ -44,20 +44,20 @@ while(cap.isOpened()):
     fig = plt.gcf()
 
     for boxData in boxesData:
-        if boxData['active']:
-            X,Y = estimateAllTranslation(boxData['x'],boxData['y'],currentFrame,nextFrame)
-            startX = boxData['startX']
-            startY = boxData['startY']
-            boxData['x'],boxData['y'],boxData['coords'] = applyBoxTransform(startX,startY,X,Y,boxData['startCoords'])
-            ax1 = fig.add_subplot(111)
-            ax1.scatter(boxData['x'],boxData['y'],c='r',s=1)
+        boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
+        startX = boxData['startX']
+        startY = boxData['startY']
+
+        ax1 = fig.add_subplot(111)
+        ax1.scatter(boxData['x'][boxData['valid']],boxData['y'][boxData['valid']],c='r',s=1)
+        print(np.sum(boxData['valid']),end=" ")
+        if np.sum(boxData['valid']) > 5:
+            boxData['coords'] = applyBoxTransform(startX,startY,boxData['x'],boxData['y'],boxData['startCoords'],boxData['valid'])
             coords = boxData['coords']
             # xmin,ymin,xmax,ymax
-            if coords[2] < currentFrame.shape[1] and coords[3] < currentFrame.shape[0]:
+            if coords[0] > 0 and coords[1] > 0 and coords[2] < currentFrame.shape[1] and coords[3] < currentFrame.shape[0]:
                 rect = patches.Rectangle((coords[0],coords[1]),coords[2]-coords[0],coords[3]-coords[1],linewidth=1,edgecolor='b',facecolor='none')
                 ax1.add_patch(rect)
-            else:
-                boxData['active'] = False
     plt.savefig("outputs/"+str(idx).zfill(4)+".png")
     fig.clf()
     idx = idx+1

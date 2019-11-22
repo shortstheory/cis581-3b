@@ -68,13 +68,12 @@ def ransac_est_homography(x, y, X, Y, threshold):
     ptindices = ptindices[:,0]
     j=0
     Anew = np.zeros([2*ptindices.shape[0],9])
-    print(ptindices.shape)
     for i in range(ptindices.shape[0]):
         Anew[2*j,:] = A[2*ptindices[i],:]
         Anew[2*j+1,:] = A[2*ptindices[i]+1,:]
         j=j+1
     U, s, V = np.linalg.svd(Anew, full_matrices=True)
     h = V[-1, :]/V[-1,-1]
-    print("Max Inlier Count: " + str(maxInlierCount))
+    # print("Max Inlier Count: " + str(maxInlierCount))
     H = h.reshape(3, 3)
     return H
