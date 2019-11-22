@@ -26,7 +26,8 @@ for box in boxes:
         'y': y,
         'startX': x.copy(),
         'startY': y.copy(),
-        'startCoords': box
+        'startCoords': box,
+        'active': True
     }
     boxesData.append(boxData)
 print(boxesData)
@@ -43,17 +44,20 @@ while(cap.isOpened()):
     fig = plt.gcf()
 
     for boxData in boxesData:
-        X,Y = estimateAllTranslation(boxData['x'],boxData['y'],currentFrame,nextFrame)
-        startX = boxData['startX']
-        startY = boxData['startY']
-        # boxData['x'],boxData['y'],boxData['coords'] = applyBoxTransform(boxData['x'],boxData['y'],X,Y,boxData['coords'])
-        boxData['x'],boxData['y'],boxData['coords'] = applyBoxTransform(startX,startY,X,Y,boxData['startCoords'])
-        ax1 = fig.add_subplot(111)
-        ax1.scatter(boxData['x'],boxData['y'],c='r',s=1)
-        coords = boxData['coords']
-        # xmin,ymin,xmax,ymax
-        rect = patches.Rectangle((coords[0],coords[1]),coords[2]-coords[0],coords[3]-coords[1],linewidth=1,edgecolor='b',facecolor='none')
-        ax1.add_patch(rect)
+        if boxData['active']:
+            X,Y = estimateAllTranslation(boxData['x'],boxData['y'],currentFrame,nextFrame)
+            startX = boxData['startX']
+            startY = boxData['startY']
+            boxData['x'],boxData['y'],boxData['coords'] = applyBoxTransform(startX,startY,X,Y,boxData['startCoords'])
+            ax1 = fig.add_subplot(111)
+            ax1.scatter(boxData['x'],boxData['y'],c='r',s=1)
+            coords = boxData['coords']
+            # xmin,ymin,xmax,ymax
+            if coords[2] < currentFrame.shape[1] and coords[3] < currentFrame.shape[0]:
+                rect = patches.Rectangle((coords[0],coords[1]),coords[2]-coords[0],coords[3]-coords[1],linewidth=1,edgecolor='b',facecolor='none')
+                ax1.add_patch(rect)
+            else:
+                boxData['active'] = False
     plt.savefig("outputs/"+str(idx).zfill(4)+".png")
     fig.clf()
     idx = idx+1

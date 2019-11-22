@@ -64,7 +64,6 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     nCX2 = nCX.copy()
     nCY2 = nCY.copy()
     # gray image deltas
-    It = -img2G[nCY,nCX]+img1G[nCY,nCX]
     Ixp = Ix[nCY,nCX].reshape(-1,1)
     Iyp = Iy[nCY,nCX].reshape(-1,1)
     A = np.hstack([Ixp,Iyp])
@@ -76,6 +75,12 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
         nCX2 = nCX2+u
         x2 = x2+u
         y2 = y2+v
+        xDelete = np.argwhere(x2>img1.shape[1])
+        x2 = np.delete(x2, xDelete)
+        y2 = np.delete(y2, xDelete)
+        yDelete = np.argwhere(y2>img1.shape[0])
+        x2 = np.delete(x2, yDelete)
+        y2 = np.delete(y2, yDelete)
         i=i+1
     if (x2<0 or x2>img1.shape[1] or y2<0 or y2>img1.shape[1]):
         x2 = 0
