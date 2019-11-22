@@ -70,7 +70,7 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     A = np.hstack([Ixp,Iyp])
     while ((u+v)>1 and i<15):
         # we don't really need to use interp2 for img2 but it's easy way to get pts
-        It = interp2(img1G,nCX2,nCY2)-interp2(img2G,nCX,nCY)
+        It = interp2(img1G,nCX,nCY)-interp2(img2G,nCX2,nCY2) # WTF!
         u,v = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(It)
         nCY2 = nCY2+v
         nCX2 = nCX2+u

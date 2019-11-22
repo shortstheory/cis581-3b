@@ -10,7 +10,6 @@ def estimateAllTranslation(startXs,startYs,img1,img2):
     Imag1,Ix1,Iy1,Iori1 = findDerivatives(img1G)
     newXs = np.zeros(startXs.shape)
     newYs = np.zeros(startYs.shape)
-    print(startXs.shape)
     for i in range(startXs.shape[0]): #x-coord
         newXs[i],newYs[i] = estimateFeatureTranslation(startXs[i],startYs[i],Ix1,Iy1,img1,img2)
     return newXs,newYs
