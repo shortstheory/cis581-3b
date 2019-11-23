@@ -1,0 +1,26 @@
+<annotation>
+	<folder>framesMed</folder>
+	<filename>0210.png</filename>
+	<path>/home/saumya/sem1/CIS 581/Project3B/cis581-3b/framesMed/0210.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>540</width>
+		<height>960</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>med</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>90</xmin>
+			<ymin>451</ymin>
+			<xmax>329</xmax>
+			<ymax>556</ymax>
+		</bndbox>
+	</object>
+</annotation>

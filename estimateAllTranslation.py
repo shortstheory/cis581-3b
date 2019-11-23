@@ -21,5 +21,5 @@ def estimateAllTranslation(startXs,startYs,valid,img1,img2):
                 xdelta = newXs[i]-startXs[i]
                 ydelta = newYs[i]-startYs[i]
                 res = np.sqrt(np.square(ydelta)+np.square(xdelta))
-                valid[i] = res < 4
+                valid[i] = res < 100
     return newXs,newYs,valid

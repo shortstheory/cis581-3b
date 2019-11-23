@@ -1,0 +1,26 @@
+<annotation>
+	<folder>cis581-3b</folder>
+	<filename>0020.png</filename>
+	<path>/home/saumya/sem1/CIS 581/Project3B/cis581-3b/0020.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>640</width>
+		<height>360</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>20</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>226</xmin>
+			<ymin>129</ymin>
+			<xmax>285</xmax>
+			<ymax>175</ymax>
+		</bndbox>
+	</object>
+</annotation>
