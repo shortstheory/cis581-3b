@@ -10,6 +10,8 @@ def estimateAllTranslation(startXs,startYs,valid,img1,img2):
     Imag1,Ix1,Iy1,Iori1 = findDerivatives(img1G)
     newXs = np.zeros(startXs.shape)
     newYs = np.zeros(startYs.shape)
+    # print('valid',valid)
+    # print('sum of valid', np.sum(1*valid))
     for i in range(startXs.shape[0]): #x-coord
         if valid[i]:
             newXs[i],newYs[i] = estimateFeatureTranslation(startXs[i],startYs[i],Ix1,Iy1,img1,img2)
@@ -19,5 +21,5 @@ def estimateAllTranslation(startXs,startYs,valid,img1,img2):
                 xdelta = newXs[i]-startXs[i]
                 ydelta = newYs[i]-startYs[i]
                 res = np.sqrt(np.square(ydelta)+np.square(xdelta))
-                valid[i] = res < 3
+                valid[i] = res < 4
     return newXs,newYs,valid

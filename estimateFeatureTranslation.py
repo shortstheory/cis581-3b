@@ -56,17 +56,17 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     img2G = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     x2,y2 = startX,startY
     u,v=10,10
-#<<<<<<< HEAD
-    nX = np.arange(startX-10,startX+11)
-    nY = np.arange(startY-10,startY+11)
-#=======
+
 #    windowSize = 5
 #    nX = np.arange(startX-windowSize,startX+windowSize+1)
 #    nY = np.arange(startY-windowSize,startY+windowSize+1)
 #>>>>>>> 1c555b4404926f106caa2a66df244c46736963c1
+
+    windowSize = 3
+    nX = np.arange(startX-windowSize,startX+windowSize+1)
+    nY = np.arange(startY-windowSize,startY+windowSize+1)
     nCx,nCy = np.meshgrid(nX,nY)
-    # print(nX)
-    if np.any(nX>img1.shape[1]) or np.any(nY>img1.shape[0]) or np.any(nX<0) or np.any(nY<0):
+    if np.any(nX>img1.shape[1]-2*windowSize) or np.any(nY>img1.shape[0]-2*windowSize) or np.any(nX<0+2*windowSize) or np.any(nY<0+2*windowSize):
         return -1,-1
     nCX = nCx.flatten().astype('int')
     nCY = nCy.flatten().astype('int')
@@ -85,7 +85,4 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
         x2 = x2+u
         y2 = y2+v
         i=i+1
-    # if (x2<windowSize*2 or x2+windowSize*2>img1.shape[1] or y2<windowSize*2 or y2+windowSize*2>img1.shape[1]):
-    #     x2 = -1
-    #     y2 = -1
     return x2,y2
