@@ -3,8 +3,8 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import sys
 
-def getBoundingBoxes():
-    root = ET.parse('0150.xml').getroot()
+def getBoundingBoxes(filename):
+    root = ET.parse(filename).getroot()
     boxes = []
     for obj in root.findall('object'):
         for box in obj.findall('bndbox'):

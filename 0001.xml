@@ -1,26 +1,26 @@
 <annotation>
-	<folder>framesMed</folder>
-	<filename>0001.png</filename>
-	<path>/home/saumya/sem1/CIS 581/Project3B/cis581-3b/framesMed/0001.png</path>
+	<folder>cis581-3b</folder>
+	<filename>first.png</filename>
+	<path>/home/saumya/sem1/CIS 581/Project3B/cis581-3b/first.png</path>
 	<source>
 		<database>Unknown</database>
 	</source>
 	<size>
-		<width>540</width>
-		<height>960</height>
+		<width>640</width>
+		<height>360</height>
 		<depth>3</depth>
 	</size>
 	<segmented>0</segmented>
 	<object>
-		<name>car</name>
+		<name>f</name>
 		<pose>Unspecified</pose>
 		<truncated>0</truncated>
 		<difficult>0</difficult>
 		<bndbox>
-			<xmin>256</xmin>
-			<ymin>449</ymin>
-			<xmax>359</xmax>
-			<ymax>526</ymax>
+			<xmin>224</xmin>
+			<ymin>123</ymin>
+			<xmax>276</xmax>
+			<ymax>170</ymax>
 		</bndbox>
 	</object>
 </annotation>
