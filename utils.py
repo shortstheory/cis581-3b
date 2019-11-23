@@ -22,7 +22,8 @@ def GaussianPDF_2D(mu, sigma, row, col):
     return signal.convolve2d(g_row, g_col, 'full')
 
 def findDerivatives(I_gray):
-    Gauss2D = GaussianPDF_2D(0,0.5,7,7)   #standard deviation = 1 for canny_dataset (bright images), 0.1 for Extra images(low light images)
+    kernelsize = 5
+    Gauss2D = GaussianPDF_2D(0,0.5,kernelsize,kernelsize)   #standard deviation = 1 for canny_dataset (bright images), 0.1 for Extra images(low light images)
     dx,dy = np.gradient(Gauss2D,axis=(1,0))
     Ix = signal.convolve2d(I_gray,dx,'same')
     Iy = signal.convolve2d(I_gray,dy,'same')
