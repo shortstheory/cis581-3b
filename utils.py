@@ -49,10 +49,10 @@ def getMinBox(coords):
     return int(height), int(width), corner.astype('int')
 
 def getMinPointsBox(X,Y):
-    minx = int(np.min(X))
-    miny = int(np.min(Y))
-    maxx = int(np.max(X))
-    maxy = int(np.max(Y))
+    minx = int(np.min(X[X>0]))
+    miny = int(np.min(Y[Y>0]))
+    maxx = int(np.max(X[X>0]))
+    maxy = int(np.max(Y[Y>0]))
     h=maxy-miny
     w=maxx-minx
     corner=np.array([minx,miny])
