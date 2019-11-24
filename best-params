@@ -1,0 +1,15 @@
+for medium video:
+* windowsize=3
+* kernelsize=5
+* distancethreshold<4
+* features=20
+* goodfeatures(n,0.01,10)
+* refreshments
+
+for easy video:
+* windowsize=5
+* kernelsize=5
+* distancethreshold<4
+* features=10
+* goodfeatures(n,0.01,10)
+* no refreshments

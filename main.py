@@ -12,14 +12,13 @@ from applyBoxTransform import applyBoxTransform
 from shapely.geometry.polygon import LinearRing, Polygon
 from numpy import linalg
 from refreshFeatures import *
-# white car - corner 3
-# black car - corner 3
+
 cap = cv2.VideoCapture('vids/Medium.mp4')
 ret,firstFrame = cap.read()
 boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
 boxesData = []
-pts = 10
+pts = 20
 for box in boxes:
     xmin = box[0]
     ymin = box[1]
