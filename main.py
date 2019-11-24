@@ -15,8 +15,10 @@ from refreshFeatures import *
 
 cap = cv2.VideoCapture('vids/Medium.mp4')
 ret,firstFrame = cap.read()
+
 boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
+
 boxesData = []
 pts = 20
 for box in boxes:
@@ -56,8 +58,11 @@ while(cap.isOpened()):
         validpts = np.sum(boxData['valid'])
         if validpts<pts:
             # h,w,corner = getMinBox(boxData['coords'])
-            h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
-            print(h,w,corner)
+            # h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
+            # print(h,w,corner)
+            corner = boxData['displayCorner']
+            h = boxData['displayHeight']
+            w = boxData['displayWidth']
             if h > 0 and w > 0 and corner[0] >= 0 and corner[1] >= 0:
                 boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
                 boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)
@@ -85,8 +90,9 @@ while(cap.isOpened()):
                 boxData['displayWidth']  = w
             rect = patches.Rectangle(boxData['displayCorner'],boxData['displayWidth'],boxData['displayHeight'],linewidth=1,edgecolor='r',facecolor='none')
             ax1.add_patch(rect)
-            ring = LinearRing(coords)
-            x, y = ring.xy
+            ax1.axis('off')
+            # ring = LinearRing(coords)
+            # x, y = ring.xy
             # ax1.plot(x, y)
     plt.savefig("outputs2/"+str(idx).zfill(4)+".png")
     fig.clf()
