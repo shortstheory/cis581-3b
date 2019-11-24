@@ -31,6 +31,23 @@ def findDerivatives(I_gray):
     Iori = np.arctan(Iy/Ix)
     return Imag, Ix, Iy,Iori
 
+def getMinBox(coords):
+    height = min(coords[3,1]-coords[0,1],coords[2,1]-coords[1,1])
+    width = min(coords[1,0]-coords[0,0],coords[2,0]-coords[3,1])
+    minDeltaIdx = 3
+    corner = coords[minDeltaIdx].copy()
+    if minDeltaIdx == 0:
+        height = height
+        width = width
+    elif minDeltaIdx == 1:
+        corner[0] -= width
+    elif minDeltaIdx == 2:
+        corner[1] -= height
+        corner[0] -= width
+    elif minDeltaIdx == 3:
+        corner[1] -= height
+    return int(height), int(width), corner.astype('int')
+
 def est_homography(x, y, X, Y):
     N = x.size
     A = np.zeros([2 * N, 9])

@@ -11,6 +11,7 @@ from estimateAllTranslation import *
 from applyBoxTransform import applyBoxTransform
 from shapely.geometry.polygon import LinearRing, Polygon
 from numpy import linalg
+from refreshFeatures import *
 # white car - corner 3
 # black car - corner 3
 cap = cv2.VideoCapture('vids/Easy.mp4')
@@ -18,14 +19,14 @@ ret,firstFrame = cap.read()
 boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
 boxesData = []
-
+pts = 10
 for box in boxes:
     xmin = box[0]
     ymin = box[1]
     xmax = box[2]
     ymax = box[3]
     boximg = gray[ymin:ymax,xmin:xmax]    
-    x,y = getBoxFeatures(boximg,box,10)
+    x,y = getBoxFeatures(boximg,box,pts)
     boxCoords = np.array([[xmin,ymin],[xmax,ymin],[xmax,ymax],[xmin,ymax]])
     boxData = {
         'coords': boxCoords,
@@ -35,13 +36,11 @@ for box in boxes:
         'prevBoxCoords': np.array([[0,0],[0,0],[0,0],[0,0]]),
         'displayHeight': 0,
         'displayWidth': 0,
-        'displayCorner': np.array([0,0])
     }
     boxesData.append(boxData)
 currentFrame = firstFrame
 idx = 0
 boxUpdateRate = 10
-
 while(cap.isOpened()):
     ret,nextFrame = cap.read()
     if ret == False:
@@ -53,7 +52,16 @@ while(cap.isOpened()):
     for boxData in boxesData:
         prevX = boxData['x']
         prevY = boxData['y']
-        boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
+        if np.sum(boxData['valid'])<pts:
+            h,w,corner = getMinBox(boxData['coords'])
+            print(h,w,corner)
+            boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
+            boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)
+            print("Feature refreshed")
+            prevX = boxData['x']
+            prevY = boxData['y']
+        else:
+            boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
         ax1 = fig.add_subplot(111)
         ax1.scatter(boxData['x'][boxData['valid']],boxData['y'][boxData['valid']],c='r',s=1)
         if np.sum(boxData['valid']) >= 4:
@@ -61,33 +69,16 @@ while(cap.isOpened()):
             coords = boxData['coords']
             delta = linalg.norm(coords-boxData['prevBoxCoords'],axis=1)
             minDeltaIdx = np.argmin(delta)
-            print(delta)
-            print(minDeltaIdx)
+            # print(delta)
+            # print(minDeltaIdx)
             boxData['prevBoxCoords'] = coords
-            height = min(coords[3,1]-coords[0,1],coords[2,1]-coords[1,1])
-            width = min(coords[1,0]-coords[0,0],coords[2,0]-coords[3,1])
-            minDeltaIdx = 1
-            if minDeltaIdx == 0:
-                height = height
-                width = width
-            elif minDeltaIdx == 1:
-                height = height
-                width = -width
-            elif minDeltaIdx == 2:
-                height = -height
-                width = -width
-            elif minDeltaIdx == 3:
-                height = -height
-                width = width
+            h, w, corner = getMinBox(coords)
             if idx % 1 == 0:
-                boxData['displayCorner'] = coords[minDeltaIdx]
-                boxData['displayHeight'] = height
-                boxData['displayWidth']= width
+                boxData['displayCorner'] = corner
+                boxData['displayHeight'] = h
+                boxData['displayWidth']  = w
             rect = patches.Rectangle(boxData['displayCorner'],boxData['displayWidth'],boxData['displayHeight'],linewidth=1,edgecolor='r',facecolor='none')
             ax1.add_patch(rect)
-            ring = LinearRing(coords)
-            # x,y = ring.xy
-            # ax1.plot(x, y)
     plt.savefig("outputs2/"+str(idx).zfill(4)+".png")
     fig.clf()
     idx = idx+1
