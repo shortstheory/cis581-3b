@@ -48,6 +48,16 @@ def getMinBox(coords):
         corner[1] -= height
     return int(height), int(width), corner.astype('int')
 
+def getMinPointsBox(X,Y):
+    minx = int(np.min(X))
+    miny = int(np.min(Y))
+    maxx = int(np.max(X))
+    maxy = int(np.max(Y))
+    h=maxy-miny
+    w=maxx-minx
+    corner=np.array([minx,miny])
+    return h,w,corner
+
 def est_homography(x, y, X, Y):
     N = x.size
     A = np.zeros([2 * N, 9])

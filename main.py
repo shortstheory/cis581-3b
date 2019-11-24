@@ -54,13 +54,15 @@ while(cap.isOpened()):
         prevX = boxData['x']
         prevY = boxData['y']
         print(np.sum(boxData['valid']),end=" ")
-        if np.sum(boxData['valid'])<pts:
+        validpts = np.sum(boxData['valid'])
+        if validpts<pts:
             # h,w,corner = getMinBox(boxData['coords'])
-            h=boxData['displayHeight']
-            w=boxData['displayWidth']
-            corner=boxData['displayCorner']
+            h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
             print(h,w,corner)
-            if h > 0 and w > 0 and corner[0] > 0 and corner[1] > 0:
+            if h == 0 or w == 0 or validpts <= 6:
+                h = 100
+                w = 100
+            if h > 0 and w > 0 and corner[0] >= 0 and corner[1] >= 0:
                 boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
                 boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)
                 print("Feature refreshed")
@@ -79,7 +81,8 @@ while(cap.isOpened()):
             minDeltaIdx = np.argmin(delta)
 
             boxData['prevBoxCoords'] = coords
-            h, w, corner = getMinBox(coords)
+            # h, w, corner = getMinBox(coords)
+            h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
             if idx % 10 == 0:
                 boxData['displayCorner'] = corner
                 boxData['displayHeight'] = h

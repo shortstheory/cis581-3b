@@ -56,7 +56,7 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     img2G = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     x2,y2 = startX,startY
     u,v=10,10
-    windowSize = 5
+    windowSize = 3
     nX = np.arange(startX-windowSize,startX+windowSize+1)
     nY = np.arange(startY-windowSize,startY+windowSize+1)
     nCx,nCy = np.meshgrid(nX,nY)
