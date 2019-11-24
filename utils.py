@@ -34,7 +34,7 @@ def findDerivatives(I_gray):
 def getMinBox(coords):
     height = min(coords[3,1]-coords[0,1],coords[2,1]-coords[1,1])
     width = min(coords[1,0]-coords[0,0],coords[2,0]-coords[3,1])
-    minDeltaIdx = 3
+    minDeltaIdx = 0
     corner = coords[minDeltaIdx].copy()
     if minDeltaIdx == 0:
         height = height

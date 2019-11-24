@@ -14,12 +14,12 @@ from numpy import linalg
 from refreshFeatures import *
 # white car - corner 3
 # black car - corner 3
-cap = cv2.VideoCapture('vids/Easy.mp4')
+cap = cv2.VideoCapture('vids/Medium.mp4')
 ret,firstFrame = cap.read()
 boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
 boxesData = []
-pts = 10
+pts = 20
 for box in boxes:
     xmin = box[0]
     ymin = box[1]
@@ -36,6 +36,7 @@ for box in boxes:
         'prevBoxCoords': np.array([[0,0],[0,0],[0,0],[0,0]]),
         'displayHeight': 0,
         'displayWidth': 0,
+        'displayCorner': np.array([[0,0],[0,0],[0,0],[0,0]])
     }
     boxesData.append(boxData)
 currentFrame = firstFrame
@@ -52,14 +53,21 @@ while(cap.isOpened()):
     for boxData in boxesData:
         prevX = boxData['x']
         prevY = boxData['y']
+        print(np.sum(boxData['valid']),end=" ")
         if np.sum(boxData['valid'])<pts:
-            h,w,corner = getMinBox(boxData['coords'])
+            # h,w,corner = getMinBox(boxData['coords'])
+            h=boxData['displayHeight']
+            w=boxData['displayWidth']
+            corner=boxData['displayCorner']
             print(h,w,corner)
-            boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
-            boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)
-            print("Feature refreshed")
-            prevX = boxData['x']
-            prevY = boxData['y']
+            if h > 0 and w > 0 and corner[0] > 0 and corner[1] > 0:
+                boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
+                boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)
+                print("Feature refreshed")
+                prevX = boxData['x']
+                prevY = boxData['y']
+            else:
+                boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
         else:
             boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
         ax1 = fig.add_subplot(111)
@@ -69,16 +77,18 @@ while(cap.isOpened()):
             coords = boxData['coords']
             delta = linalg.norm(coords-boxData['prevBoxCoords'],axis=1)
             minDeltaIdx = np.argmin(delta)
-            # print(delta)
-            # print(minDeltaIdx)
+
             boxData['prevBoxCoords'] = coords
             h, w, corner = getMinBox(coords)
-            if idx % 1 == 0:
+            if idx % 10 == 0:
                 boxData['displayCorner'] = corner
                 boxData['displayHeight'] = h
                 boxData['displayWidth']  = w
             rect = patches.Rectangle(boxData['displayCorner'],boxData['displayWidth'],boxData['displayHeight'],linewidth=1,edgecolor='r',facecolor='none')
             ax1.add_patch(rect)
+            ring = LinearRing(coords)
+            x, y = ring.xy
+            # ax1.plot(x, y)
     plt.savefig("outputs2/"+str(idx).zfill(4)+".png")
     fig.clf()
     idx = idx+1
