@@ -22,13 +22,41 @@ def GaussianPDF_2D(mu, sigma, row, col):
     return signal.convolve2d(g_row, g_col, 'full')
 
 def findDerivatives(I_gray):
-    Gauss2D = GaussianPDF_2D(0,0.5,7,7)   #standard deviation = 1 for canny_dataset (bright images), 0.1 for Extra images(low light images)
+    kernelsize = 5
+    Gauss2D = GaussianPDF_2D(0,0.5,kernelsize,kernelsize)   #standard deviation = 1 for canny_dataset (bright images), 0.1 for Extra images(low light images)
     dx,dy = np.gradient(Gauss2D,axis=(1,0))
     Ix = signal.convolve2d(I_gray,dx,'same')
     Iy = signal.convolve2d(I_gray,dy,'same')
     Imag = np.sqrt(Ix*Ix + Iy*Iy)
     Iori = np.arctan(Iy/Ix)
     return Imag, Ix, Iy,Iori
+
+def getMinBox(coords):
+    height = min(coords[3,1]-coords[0,1],coords[2,1]-coords[1,1])
+    width = min(coords[1,0]-coords[0,0],coords[2,0]-coords[3,1])
+    minDeltaIdx = 0
+    corner = coords[minDeltaIdx].copy()
+    if minDeltaIdx == 0:
+        height = height
+        width = width
+    elif minDeltaIdx == 1:
+        corner[0] -= width
+    elif minDeltaIdx == 2:
+        corner[1] -= height
+        corner[0] -= width
+    elif minDeltaIdx == 3:
+        corner[1] -= height
+    return int(height), int(width), corner.astype('int')
+
+def getMinPointsBox(X,Y):
+    minx = int(np.min(X[X>0]))
+    miny = int(np.min(Y[Y>0]))
+    maxx = int(np.max(X[X>0]))
+    maxy = int(np.max(Y[Y>0]))
+    h=maxy-miny
+    w=maxx-minx
+    corner=np.array([minx,miny])
+    return h,w,corner
 
 def est_homography(x, y, X, Y):
     N = x.size

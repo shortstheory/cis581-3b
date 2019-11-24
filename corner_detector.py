@@ -16,6 +16,7 @@ import numpy as np
 
 def corner_detector(cimg):
     # [xmin,ymin,xmax,ymax]
+    print(cimg.shape)
     cimg = cv2.cornerHarris(cimg,2,3,0.04)
     cimg[cimg<0.01*cimg.max()]=0
     return cimg

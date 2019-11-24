@@ -9,30 +9,56 @@ from corner_detector import *
 from anms import *
 from estimateAllTranslation import *
 from applyBoxTransform import applyBoxTransform
+<<<<<<< HEAD
 import warnings
 warnings.filterwarnings("ignore")
 
 cap = cv2.VideoCapture('vids/Easy.mp4')
+=======
+from shapely.geometry.polygon import LinearRing, Polygon
+from numpy import linalg
+from refreshFeatures import *
+# white car - corner 3
+# black car - corner 3
+cap = cv2.VideoCapture('vids/Medium.mp4')
+>>>>>>> 794f82d2d4b019afee69d3fc9eb2704398b70a34
 ret,firstFrame = cap.read()
 boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
 boxesData = []
+<<<<<<< HEAD
 pts = 10
 for box in boxes:
     boximg = gray[box[1]:box[3],box[0]:box[2]]
     x,y = getBoxFeatures(boximg,box,pts)
+=======
+pts = 20
+for box in boxes:
+    xmin = box[0]
+    ymin = box[1]
+    xmax = box[2]
+    ymax = box[3]
+    boximg = gray[ymin:ymax,xmin:xmax]    
+    x,y = getBoxFeatures(boximg,box,pts)
+    boxCoords = np.array([[xmin,ymin],[xmax,ymin],[xmax,ymax],[xmin,ymax]])
+>>>>>>> 794f82d2d4b019afee69d3fc9eb2704398b70a34
     boxData = {
-        'coords': box,
+        'coords': boxCoords,
         'x': x,
         'y': y,
-        'startX': x.copy(),
-        'startY': y.copy(),
-        'startCoords': box,
-        'valid': np.ones(x.shape[0],dtype='bool')
+        'valid': np.ones(x.shape[0],dtype='bool'),
+        'prevBoxCoords': np.array([[0,0],[0,0],[0,0],[0,0]]),
+        'displayHeight': 0,
+        'displayWidth': 0,
+        'displayCorner': np.array([[0,0],[0,0],[0,0],[0,0]])
     }
     boxesData.append(boxData)
 currentFrame = firstFrame
 idx = 0
+<<<<<<< HEAD
+=======
+boxUpdateRate = 10
+>>>>>>> 794f82d2d4b019afee69d3fc9eb2704398b70a34
 while(cap.isOpened()):
     ret,nextFrame = cap.read()
     if ret == False:
@@ -41,39 +67,49 @@ while(cap.isOpened()):
     gray = cv2.cvtColor(currentFrame,cv2.COLOR_BGR2GRAY)
     plt.imshow(cv2.cvtColor(nextFrame,cv2.COLOR_BGR2RGB))
     fig = plt.gcf()
-
     for boxData in boxesData:
-        print('----',np.sum(boxData['valid']))
-        if np.sum(boxData['valid'])>=pts:
-            boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
+
+        prevX = boxData['x']
+        prevY = boxData['y']
+        print(np.sum(boxData['valid']),end=" ")
+        validpts = np.sum(boxData['valid'])
+        if validpts<pts:
+            # h,w,corner = getMinBox(boxData['coords'])
+            h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
+            print(h,w,corner)
+            if h == 0 or w == 0 or validpts <= 6:
+                h = 100
+                w = 100
+            if h > 0 and w > 0 and corner[0] >= 0 and corner[1] >= 0:
+                boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
+                boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)
+                print("Feature refreshed")
+                prevX = boxData['x']
+                prevY = boxData['y']
+            else:
+                boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
         else:
-            print('inside else')
-            boxData['startCoords']=boxData['coords']
-            box = boxData['coords'].astype(int)
-            boximg = gray[box[1]:box[3],box[0]:box[2]]
-            boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,box,boxData['x'], boxData['y'], boxData['valid'],pts)
-            boxData['startX']=boxData['x']
-            boxData['startY']=boxData['y'] 
-            print('----after refresh',np.sum(boxData['valid']))
-        startX = boxData['startX']
-        startY = boxData['startY']
+            boxData['x'],boxData['y'],boxData['valid'] = estimateAllTranslation(boxData['x'],boxData['y'],boxData['valid'],currentFrame,nextFrame)
         ax1 = fig.add_subplot(111)
         ax1.scatter(boxData['x'][boxData['valid']],boxData['y'][boxData['valid']],c='r',s=1)
-        # print(np.sum(boxData['valid']),end=" ")
         if np.sum(boxData['valid']) >= 4:
-            boxprev = boxData['coords']
-            boxData['coords'] = applyBoxTransform(startX,startY,boxData['x'],boxData['y'],boxData['startCoords'],boxData['valid'])
+            boxData['coords'] = applyBoxTransform(prevX,prevY,boxData['x'],boxData['y'],boxData['coords'],boxData['valid'])
             coords = boxData['coords']
-            # xmin,ymin,xmax,ymax
-            if coords[0] > 0 and coords[1] > 0 and coords[2] < currentFrame.shape[1] and coords[3] < currentFrame.shape[0]:
-                rect = patches.Rectangle((coords[0],coords[1]),coords[2]-coords[0],coords[3]-coords[1],linewidth=1,edgecolor='b',facecolor='none')
-                ax1.add_patch(rect)
-#             else:
-#                 print('homo fucked up')
-#                 coords = boxprev
-#                 boxData['coords']=boxprev
-#                 rect = patches.Rectangle((coords[0],coords[1]),coords[2]-coords[0],coords[3]-coords[1],linewidth=1,edgecolor='b',facecolor='none')
-#                 ax1.add_patch(rect)
+            delta = linalg.norm(coords-boxData['prevBoxCoords'],axis=1)
+            minDeltaIdx = np.argmin(delta)
+
+            boxData['prevBoxCoords'] = coords
+            # h, w, corner = getMinBox(coords)
+            h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
+            if idx % 10 == 0:
+                boxData['displayCorner'] = corner
+                boxData['displayHeight'] = h
+                boxData['displayWidth']  = w
+            rect = patches.Rectangle(boxData['displayCorner'],boxData['displayWidth'],boxData['displayHeight'],linewidth=1,edgecolor='r',facecolor='none')
+            ax1.add_patch(rect)
+            ring = LinearRing(coords)
+            x, y = ring.xy
+            # ax1.plot(x, y)=
     plt.savefig("outputs2/"+str(idx).zfill(4)+".png")
     fig.clf()
     idx = idx+1

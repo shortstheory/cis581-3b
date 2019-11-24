@@ -1,4 +1,5 @@
 import numpy as np
+
 def anms_mod(x_old1,y_old1,valid,cimg, max_pts):
     x_old = x_old1[valid].reshape(-1,1)
     y_old = y_old1[valid].reshape(-1,1)
@@ -37,5 +38,6 @@ def anms_mod(x_old1,y_old1,valid,cimg, max_pts):
     x = x_old1
     y[valid==0]=topNew[:,0]
     x[valid==0]=topOld[:,1]
+
     valid = np.ones(x.shape[0],dtype=bool)
     return x, y, valid
