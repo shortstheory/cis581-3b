@@ -12,24 +12,24 @@
 	</size>
 	<segmented>0</segmented>
 	<object>
-		<name>m</name>
-		<pose>Unspecified</pose>
-		<truncated>0</truncated>
-		<difficult>0</difficult>
-		<bndbox>
-			<xmin>293</xmin>
-			<ymin>184</ymin>
-			<xmax>402</xmax>
-			<ymax>265</ymax>
-		</bndbox>
-	</object>
-	<object>
 		<name>l</name>
 		<pose>Unspecified</pose>
 		<truncated>0</truncated>
 		<difficult>0</difficult>
 		<bndbox>
-			<xmin>233</xmin>
+			<xmin>296</xmin>
+			<ymin>188</ymin>
+			<xmax>396</xmax>
+			<ymax>262</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>h</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>227</xmin>
 			<ymin>128</ymin>
 			<xmax>272</xmax>
 			<ymax>166</ymax>
