@@ -9,29 +9,17 @@ from corner_detector import *
 from anms import *
 from estimateAllTranslation import *
 from applyBoxTransform import applyBoxTransform
-<<<<<<< HEAD
 import warnings
 warnings.filterwarnings("ignore")
-
-cap = cv2.VideoCapture('vids/Easy.mp4')
-=======
 from shapely.geometry.polygon import LinearRing, Polygon
 from numpy import linalg
 from refreshFeatures import *
-# white car - corner 3
-# black car - corner 3
+
 cap = cv2.VideoCapture('vids/Medium.mp4')
->>>>>>> 794f82d2d4b019afee69d3fc9eb2704398b70a34
 ret,firstFrame = cap.read()
 boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
 boxesData = []
-<<<<<<< HEAD
-pts = 10
-for box in boxes:
-    boximg = gray[box[1]:box[3],box[0]:box[2]]
-    x,y = getBoxFeatures(boximg,box,pts)
-=======
 pts = 20
 for box in boxes:
     xmin = box[0]
@@ -41,7 +29,6 @@ for box in boxes:
     boximg = gray[ymin:ymax,xmin:xmax]    
     x,y = getBoxFeatures(boximg,box,pts)
     boxCoords = np.array([[xmin,ymin],[xmax,ymin],[xmax,ymax],[xmin,ymax]])
->>>>>>> 794f82d2d4b019afee69d3fc9eb2704398b70a34
     boxData = {
         'coords': boxCoords,
         'x': x,
@@ -55,10 +42,7 @@ for box in boxes:
     boxesData.append(boxData)
 currentFrame = firstFrame
 idx = 0
-<<<<<<< HEAD
-=======
 boxUpdateRate = 10
->>>>>>> 794f82d2d4b019afee69d3fc9eb2704398b70a34
 while(cap.isOpened()):
     ret,nextFrame = cap.read()
     if ret == False:
@@ -77,9 +61,6 @@ while(cap.isOpened()):
             # h,w,corner = getMinBox(boxData['coords'])
             h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
             print(h,w,corner)
-            if h == 0 or w == 0 or validpts <= 6:
-                h = 100
-                w = 100
             if h > 0 and w > 0 and corner[0] >= 0 and corner[1] >= 0:
                 boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
                 boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)

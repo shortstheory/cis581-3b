@@ -6,9 +6,5 @@ def refreshFeatures(gray,box,x_oldd, y_oldd, valid_oldd,pts):
     x_oldd = x_oldd - box[0]
     y_oldd = y_oldd - box[1]
     res = corner_detector(gray)
-    # print("Showing plot!")
-    # plt.imshow(res)
-    # plt.show()
->>>>>>> 794f82d2d4b019afee69d3fc9eb2704398b70a34
     x, y, valid = anms_mod(x_oldd,y_oldd,valid_oldd,res,pts)
     return x+box[0],y+box[1],valid
