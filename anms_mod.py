@@ -1,7 +1,7 @@
 import numpy as np
-def anms_mod(x_old,y_old,valid,cimg, max_pts):
-    x_old = x_old[valid].reshape(-1,1)
-    y_old = y_old[valid].reshape(-1,1)
+def anms_mod(x_old1,y_old1,valid,cimg, max_pts):
+    x_old = x_old1[valid].reshape(-1,1)
+    y_old = y_old1[valid].reshape(-1,1)
     keypt = np.asarray(np.nonzero(cimg)).T
     keypt_old = np.hstack([y_old,x_old])
     keypt = np.vstack([keypt,keypt_old])
@@ -29,10 +29,13 @@ def anms_mod(x_old,y_old,valid,cimg, max_pts):
 
     distanceSorted = distance[distance[:,2].argsort(kind='mergesort')]
     distanceSorted = np.flip(distanceSorted,axis=0)
-    topN = distanceSorted[:N,:2]
+    topOld = distanceSorted[:N-x_old.shape[0],:2]
+    topNew = distanceSorted[N-x_old:N.shape[0],:2]
+
     # rmax = distanceSorted[N-1,2]
-    y = topN[:,0]
-    x = topN[:,1]
-    print(x.shape)
+    y = y_old1
+    x = x_old1
+    y[valid==0]=topNew[:,0]
+    x[valid==0]=topOld[:,1]
     valid = np.ones(x.shape[0],dtype=bool)
     return x, y, valid
