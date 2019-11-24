@@ -19,7 +19,7 @@ ret,firstFrame = cap.read()
 boxes = getBoundingBoxes('first.xml')
 gray = cv2.cvtColor(firstFrame,cv2.COLOR_BGR2GRAY)
 boxesData = []
-pts = 20
+pts = 10
 for box in boxes:
     xmin = box[0]
     ymin = box[1]
@@ -59,9 +59,6 @@ while(cap.isOpened()):
             # h,w,corner = getMinBox(boxData['coords'])
             h,w,corner = getMinPointsBox(boxData['x'],boxData['y'])
             print(h,w,corner)
-            if h == 0 or w == 0 or validpts <= 6:
-                h = 100
-                w = 100
             if h > 0 and w > 0 and corner[0] >= 0 and corner[1] >= 0:
                 boximg = gray[corner[1]:corner[1]+h,corner[0]:corner[0]+w]
                 boxData['x'],boxData['y'],boxData['valid'] = refreshFeatures(boximg,corner,boxData['x'],boxData['y'],boxData['valid'],pts)

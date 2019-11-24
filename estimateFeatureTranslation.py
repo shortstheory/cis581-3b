@@ -51,7 +51,7 @@ def interp2(v, xq, yq):
     return interp_val
 
 def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
-    i=0
+    itr=0
     img1G = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
     img2G = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
     x2,y2 = startX,startY
@@ -71,7 +71,7 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
     Ixp = Ix[nCY,nCX].reshape(-1,1)
     Iyp = Iy[nCY,nCX].reshape(-1,1)
     A = np.hstack([Ixp,Iyp])
-    while ((u+v)>1 and i<15):
+    while ((u+v)>1 and itr<15):
         # we don't really need to use interp2 for img2 but it's easy way to get pts
         It = interp2(img1G,nCX,nCY)-interp2(img2G,nCX2,nCY2) # WTF!
         u,v = np.linalg.inv(A.T.dot(A)).dot(A.T).dot(It)
@@ -79,5 +79,5 @@ def estimateFeatureTranslation(startX, startY, Ix, Iy, img1, img2):
         nCX2 = nCX2+u
         x2 = x2+u
         y2 = y2+v
-        i=i+1
+        itr=itr+1
     return x2,y2
